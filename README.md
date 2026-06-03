@@ -1,104 +1,193 @@
-# AgentCore Project
+# BARTT AgentCore POC
 
-This project was created with the [AgentCore CLI](https://github.com/aws/agentcore-cli).
+**BARTT** (Broker Automated Reconciliation and Trade Tieout) AI agent built on
+[Amazon Bedrock AgentCore](https://aws.amazon.com/bedrock/agentcore/) using the
+[Strands SDK](https://github.com/strands-agents/sdk-python).
+
+This repository contains:
+
+| Component | Location | Description |
+|-----------|----------|-------------|
+| **barttagent** | `app/barttagent/` | Python agent backend — deployed to AWS Bedrock AgentCore |
+| **barttuiapp** | `barttuiapp/` | Streamlit chat UI — runs locally via Docker |
+| **AgentCore config** | `agentcore/` | CLI config, CDK infra, AWS targets, local credentials |
+
+---
+
+## Deployed Runtime
+
+| Property | Value |
+|----------|-------|
+| Runtime ID | `barttagentcorerepo_barttagent-30zRtU516q` |
+| Region | `ap-south-1` |
+| Network | PUBLIC |
+| Model | `apac.amazon.nova-pro-v1:0` (Amazon Nova Pro — APAC inference profile) |
+| Runtime ARN | `arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-30zRtU516q` |
+
+---
 
 ## Project Structure
 
 ```
-my-project/
-├── AGENTS.md               # AI coding assistant context
+barttagentcorerepo/
+├── README.md
+├── docker-compose.yml          # Local mode — UI + backend containers
+├── docker-compose.aws.yml      # AWS mode  — UI only, calls deployed runtime
+├── app/
+│   └── barttagent/
+│       ├── main.py             # Agent entry point (@app.entrypoint)
+│       ├── Dockerfile          # Container image for AgentCore deployment
+│       └── pyproject.toml      # Python deps managed with uv
+├── barttuiapp/
+│   ├── app.py                  # Streamlit chat UI (dual-mode: local | aws)
+│   ├── Dockerfile
+│   ├── requirements.txt        # streamlit, requests, boto3
+│   └── .dockerignore
 ├── agentcore/
-│   ├── agentcore.json      # Project config (agents, memories, credentials, gateways, evaluators)
-│   ├── aws-targets.json    # Deployment targets (account + region)
-│   ├── .env.local          # Secrets — API keys (gitignored)
-│   ├── .llm-context/       # TypeScript type definitions for AI assistants
-│   │   ├── agentcore.ts    # AgentCoreProjectSpec types
-│   │   ├── aws-targets.ts  # Deployment target types
-│   │   └── mcp.ts          # Gateway and MCP tool types
-│   └── cdk/                # CDK infrastructure (@aws/agentcore-cdk)
-├── app/                    # Agent application code
-└── evaluators/             # Custom evaluator code (if any)
+│   ├── agentcore.json          # AgentCore project config
+│   ├── aws-targets.json        # Deployment target (account + region)
+│   ├── .env.local              # Temp AWS credentials — gitignored, refresh with `agentcore dev`
+│   └── cdk/                   # CDK infrastructure
+└── evaluators/
 ```
 
-## Getting Started
+---
 
-### Prerequisites
+## Prerequisites
 
-- **Node.js** 20.x or later
-- **Python 3.10+** and **uv** for Python agents ([install uv](https://docs.astral.sh/uv/getting-started/installation/))
-- **AWS credentials** configured (`aws configure` or environment variables)
-- **Docker** (only for Container build agents)
+| Tool | Notes |
+|------|-------|
+| **Docker Desktop** | Required for both run modes |
+| **Python 3.10+** + **uv** | For local agent dev only |
+| **Node.js 20+** | Required for AgentCore CLI |
+| **AWS credentials** | In `agentcore/.env.local` — refresh with `agentcore dev` |
 
-### Development
+---
 
-Run your agent locally:
+## Run Mode 1 — Local Docker Stack
+
+Both the Streamlit UI **and** the barttagent backend run as local Docker containers.
+The UI calls the backend via the internal Docker bridge network.
+
+```bash
+# Build images and start both containers
+docker compose up --build
+
+# Open the chat UI
+open http://localhost:8501
+```
+
+**Services started:**
+
+| Container | Port | Description |
+|-----------|------|-------------|
+| `barttagent` | 8080 | Agent backend — serves HTTP `/invoke` |
+| `barttuiapp` | 8501 | Streamlit chat UI |
+
+**Environment variables used (`INVOKE_MODE=local`):**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `INVOKE_MODE` | `local` | Routing mode — `local` or `aws` |
+| `AGENT_URL` | `http://barttagent:8080` | Backend URL (Docker service name) |
+| `INVOKE_PATH` | `/invoke` | Agent invoke endpoint |
+
+---
+
+## Run Mode 2 — AWS Mode (Deployed Runtime)
+
+The UI runs in Docker locally but calls the **already-deployed** Amazon Bedrock AgentCore
+runtime on AWS. No local agent container is started.
+
+**Refresh credentials first** (they are temporary STS tokens):
+
+```bash
+agentcore dev   # starts local dev server AND refreshes agentcore/.env.local
+# Ctrl+C once credentials are written — you don't need the dev server running
+```
+
+Then start the UI in AWS mode:
+
+```bash
+docker compose -f docker-compose.aws.yml up --build
+
+# Open the chat UI
+open http://localhost:8501
+```
+
+**Environment variables used (`INVOKE_MODE=aws`):**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `INVOKE_MODE` | `aws` | Routes invocation to boto3 AgentCore client |
+| `RUNTIME_ID` | `barttagentcorerepo_barttagent-30zRtU516q` | Deployed runtime ID |
+| `AWS_REGION` | `ap-south-1` | AWS region |
+| `AWS_ACCESS_KEY_ID` | from `agentcore/.env.local` | Temp STS credentials |
+| `AWS_SECRET_ACCESS_KEY` | from `agentcore/.env.local` | Temp STS credentials |
+| `AWS_SESSION_TOKEN` | from `agentcore/.env.local` | Temp STS credentials |
+
+---
+
+## Refreshing AWS Credentials
+
+Credentials in `agentcore/.env.local` are temporary (STS tokens) and expire.
+Refresh them whenever you see `ExpiredTokenException`:
 
 ```bash
 agentcore dev
 ```
 
-### Deployment
+This regenerates the credentials. You can then `Ctrl+C` and re-run the compose stack.
 
-Deploy to AWS:
+---
+
+## Deploying the Agent Backend
+
+The backend (`barttagent`) is **already deployed**. Re-deploy only when `app/barttagent/`
+code changes:
 
 ```bash
 agentcore deploy
 ```
 
-## Commands
+After a new deployment, the `RUNTIME_ID` in `docker-compose.aws.yml` may change.
+Check the new ID with:
+
+```bash
+agentcore status
+```
+
+---
+
+## Development — Agent Backend
+
+Run the agent locally with hot-reload (without Docker):
+
+```bash
+agentcore dev
+```
+
+This starts the barttagent server at `http://localhost:8080` and writes fresh
+credentials to `agentcore/.env.local`.
+
+---
+
+## AgentCore CLI Reference
 
 | Command | Description |
-| --- | --- |
-| `agentcore create` | Create a new AgentCore project |
-| `agentcore add` | Add resources (agent, memory, credential, gateway, evaluator, policy) |
-| `agentcore remove` | Remove resources |
-| `agentcore dev` | Run agent locally with hot-reload |
-| `agentcore deploy` | Deploy to AWS via CDK |
-| `agentcore status` | Show deployment status |
-| `agentcore invoke` | Invoke agent (local or deployed) |
-| `agentcore logs` | View agent logs |
+|---------|-------------|
+| `agentcore dev` | Run agent locally with hot-reload + refresh credentials |
+| `agentcore deploy` | Deploy agent to AWS via CDK |
+| `agentcore status` | Show deployment status and runtime ID |
+| `agentcore invoke` | Invoke agent (local or deployed) from CLI |
+| `agentcore logs` | View agent CloudWatch logs |
 | `agentcore traces` | View agent traces |
-| `agentcore eval` | Run evaluations |
-| `agentcore package` | Package agent artifacts |
-| `agentcore validate` | Validate configuration |
-| `agentcore pause` | Pause a deployed agent |
-| `agentcore resume` | Resume a paused agent |
-| `agentcore fetch` | Fetch remote resource definitions |
-| `agentcore import` | Import existing resources |
-| `agentcore update` | Check for CLI updates |
 
-## Configuration
+---
 
-Edit the JSON files in `agentcore/` to configure your project. See `agentcore/.llm-context/` for type definitions and validation constraints.
-
-The project uses a **flat resource model** — agents, memories, credentials, gateways, evaluators, and policies are top-level arrays in `agentcore.json`. Resources are independent; agents discover memories and credentials at runtime via environment variables or SDK calls.
-
-## Resources
-
-| Resource | Purpose |
-| --- | --- |
-| Agent (runtime) | HTTP, MCP, or A2A agent deployed to AgentCore Runtime |
-| Memory | Persistent context storage with configurable strategies |
-| Credential | API key or OAuth credential providers |
-| Gateway | MCP gateway that routes tool calls to targets |
-| Gateway Target | Tool implementation (Lambda, MCP server, OpenAPI, Smithy, API Gateway) |
-| Evaluator | Custom LLM-as-a-Judge or code-based evaluation |
-| Online Eval Config | Continuous evaluation pipeline for deployed agents |
-| Policy | Cedar authorization policies for gateway tools |
-
-### Agent Types
-
-- **Template agents**: Created from framework templates (Strands, LangChain/LangGraph, GoogleADK, OpenAI Agents, Autogen)
-- **BYO agents**: Bring your own code with `agentcore add agent --type byo`
-- **Import agents**: Import existing Bedrock agents with `agentcore import`
-
-### Build Types
-
-- **CodeZip**: Python source packaged as a zip and deployed directly to AgentCore Runtime
-- **Container**: Docker image built via CodeBuild (ARM64), pushed to ECR, and deployed to AgentCore Runtime
-
-## Documentation
+## References
 
 - [AgentCore CLI](https://github.com/aws/agentcore-cli)
-- [AgentCore CDK Constructs](https://github.com/aws/agentcore-l3-cdk-constructs)
 - [Amazon Bedrock AgentCore](https://aws.amazon.com/bedrock/agentcore/)
+- [Strands Agents SDK](https://github.com/strands-agents/sdk-python)
+- [AgentCore CDK Constructs](https://github.com/aws/agentcore-l3-cdk-constructs)

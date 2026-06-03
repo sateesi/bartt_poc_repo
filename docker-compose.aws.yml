@@ -1,0 +1,36 @@
+# docker-compose.aws.yml — AWS mode
+#
+# Runs ONLY the barttuiapp Streamlit UI, configured to invoke the
+# ALREADY-DEPLOYED Amazon Bedrock AgentCore runtime instead of a local backend.
+#
+# Pre-requisites:
+#   1. The agent must be deployed: `agentcore deploy barttagent`
+#   2. Valid AWS credentials in agentcore/.env.local (refresh with `agentcore dev`)
+#
+# Usage:
+#   docker compose -f docker-compose.aws.yml up --build
+
+services:
+  barttuiapp:
+    build:
+      context: ./barttuiapp
+      dockerfile: Dockerfile
+    image: barttuiapp:local
+    container_name: barttuiapp
+    ports:
+      - "8501:8501"
+    # Load AWS credentials (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
+    # AWS_SESSION_TOKEN, AWS_REGION) from the agentcore credential file.
+    env_file:
+      - ./agentcore/.env.local
+    environment:
+      INVOKE_MODE: "aws"
+      RUNTIME_ID: "barttagentcorerepo_barttagent-30zRtU516q"
+      AWS_REGION: "ap-south-1"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
