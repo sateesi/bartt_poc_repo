@@ -25,6 +25,7 @@ HEALTH_URL  = f"{AGENT_URL}/ping"
 
 # AWS mode settings
 RUNTIME_ID  = os.getenv("RUNTIME_ID", "")
+RUNTIME_ARN = os.getenv("RUNTIME_ARN", "")   # full ARN preferred; falls back to RUNTIME_ID
 AWS_REGION  = os.getenv("AWS_REGION", "ap-south-1")
 
 APP_TITLE = "BARTT Agent"
@@ -56,7 +57,8 @@ with st.sidebar:
     if INVOKE_MODE == "aws":
         st.markdown("**Mode:** `AWS` (Bedrock AgentCore)")
         st.markdown(f"**Region:** `{AWS_REGION}`")
-        st.markdown(f"**Runtime ID:** `{RUNTIME_ID}`")
+        _display_arn = RUNTIME_ARN or RUNTIME_ID
+        st.markdown(f"**Runtime:** `{_display_arn}`")
         st.divider()
         st.markdown("**Backend Status**")
         try:
@@ -110,9 +112,9 @@ for msg in st.session_state.messages:
         st.markdown(msg["content"])
 
 
-# ── Streaming Generators ───────────────────────────────────────────────────────
-def stream_agent_local(prompt: str):
-    """Yield response chunks from the locally running barttagent HTTP server."""
+# ── Response Fetchers ─────────────────────────────────────────────────────────
+def fetch_agent_local(prompt: str) -> str:
+    """Fetch the full response from the locally running barttagent HTTP server."""
     with requests.post(
         INVOKE_URL,
         json={"prompt": prompt},
@@ -121,39 +123,69 @@ def stream_agent_local(prompt: str):
         headers={"Content-Type": "application/json"},
     ) as resp:
         resp.raise_for_status()
-        for chunk in resp.iter_content(chunk_size=None, decode_unicode=True):
-            if chunk:
-                yield chunk
-
-
-def stream_agent_aws(prompt: str):
-    """Yield response chunks from the deployed AWS Bedrock AgentCore runtime."""
-    if not RUNTIME_ID:
-        raise ValueError(
-            "RUNTIME_ID env var is not set. "
-            "Set it to your AgentCore runtime ID, e.g. "
-            "'barttagentcorerepo_barttagent-30zRtU516q'."
+        return "".join(
+            chunk
+            for chunk in resp.iter_content(chunk_size=None, decode_unicode=True)
+            if chunk
         )
-    client = boto3.client("bedrock-agentcore-runtime", region_name=AWS_REGION)
-    response = client.invoke_agent_runtime(
-        agentRuntimeId=RUNTIME_ID,
+
+
+def fetch_agent_aws(prompt: str) -> str:
+    """Fetch the full response from the deployed AWS Bedrock AgentCore runtime."""
+    arn = RUNTIME_ARN or RUNTIME_ID
+    if not arn:
+        raise ValueError(
+            "Set RUNTIME_ARN (full ARN) or RUNTIME_ID env var. "
+            "Example RUNTIME_ARN: "
+            "'arn:aws:bedrock-agentcore:ap-south-1:123456789012:runtime/my-runtime-id'"
+        )
+    # Service: 'bedrock-agentcore'  (boto3 name — NOT 'bedrock-agentcore-runtime')
+    # Parameter: agentRuntimeArn accepts both full ARN and runtime ID
+    # Response key: 'response' (streaming blob)
+    client = boto3.client("bedrock-agentcore", region_name=AWS_REGION)
+    resp = client.invoke_agent_runtime(
+        agentRuntimeArn=arn,
         payload=json.dumps({"prompt": prompt}).encode("utf-8"),
     )
-    body = response.get("body")
+    body = resp.get("response")
     if body is None:
-        return
-    # botocore StreamingBody — read in chunks
-    for chunk in body.iter_chunks(chunk_size=1024):
-        if chunk:
-            yield chunk.decode("utf-8", errors="replace")
+        return ""
+    raw = b"".join(body.iter_chunks(chunk_size=1024)).decode("utf-8", errors="replace")
+    return _parse_sse(raw)
 
 
-def stream_agent(prompt: str):
-    """Route to the correct streaming generator based on INVOKE_MODE."""
+def _parse_sse(raw: str) -> str:
+    """Parse SSE lines of the form  data: "json-string"  into plain text.
+
+    The AgentCore runtime returns each token as a Server-Sent Events line:
+        data: "<thinking"
+        data: ">"
+        data: " \\nThe user is asking..."
+    We JSON-decode each value so escape sequences (\\n, \\t, unicode) are
+    resolved, then join everything into a single readable string.
+    If a line is NOT in that format (plain text backend, etc.) we keep it as-is.
+    """
+    parts: list[str] = []
+    for line in raw.splitlines():
+        if line.startswith("data:"):
+            value = line[len("data:"):].strip()
+            try:
+                # value is a JSON-encoded string, e.g. "\"hello\\nworld\""
+                parts.append(json.loads(value))
+            except (json.JSONDecodeError, ValueError):
+                # not JSON — keep the raw value
+                parts.append(value)
+        elif line:
+            # non-SSE line — keep verbatim
+            parts.append(line)
+    return "".join(parts)
+
+
+def fetch_agent(prompt: str) -> str:
+    """Route to the correct fetcher based on INVOKE_MODE."""
     if INVOKE_MODE == "aws":
-        yield from stream_agent_aws(prompt)
-    else:
-        yield from stream_agent_local(prompt)
+        return fetch_agent_aws(prompt)
+    return fetch_agent_local(prompt)
 
 
 # ── Chat Input & Response ──────────────────────────────────────────────────────
@@ -165,7 +197,9 @@ if user_input := st.chat_input("Ask BARTT something..."):
 
     with st.chat_message("assistant"):
         try:
-            full_response = st.write_stream(stream_agent(user_input))
+            with st.spinner("Thinking..."):
+                full_response = fetch_agent(user_input)
+            st.markdown(full_response)
 
         except requests.exceptions.ConnectionError:
             full_response = (

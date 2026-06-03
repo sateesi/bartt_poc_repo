@@ -81,7 +81,7 @@ open http://localhost:8501
 
 | Container | Port | Description |
 |-----------|------|-------------|
-| `barttagent` | 8080 | Agent backend — serves HTTP `/invoke` |
+| `barttagent` | 8080 | Agent backend — `POST /invocations`, `GET /ping` |
 | `barttuiapp` | 8501 | Streamlit chat UI |
 
 **Environment variables used (`INVOKE_MODE=local`):**
@@ -120,7 +120,8 @@ open http://localhost:8501
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `INVOKE_MODE` | `aws` | Routes invocation to boto3 AgentCore client |
-| `RUNTIME_ID` | `barttagentcorerepo_barttagent-30zRtU516q` | Deployed runtime ID |
+| `RUNTIME_ARN` | `arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-30zRtU516q` | Full runtime ARN (preferred over RUNTIME_ID) |
+| `RUNTIME_ID` | `barttagentcorerepo_barttagent-30zRtU516q` | Runtime ID (fallback if RUNTIME_ARN not set) |
 | `AWS_REGION` | `ap-south-1` | AWS region |
 | `AWS_ACCESS_KEY_ID` | from `agentcore/.env.local` | Temp STS credentials |
 | `AWS_SECRET_ACCESS_KEY` | from `agentcore/.env.local` | Temp STS credentials |
@@ -182,6 +183,61 @@ credentials to `agentcore/.env.local`.
 | `agentcore invoke` | Invoke agent (local or deployed) from CLI |
 | `agentcore logs` | View agent CloudWatch logs |
 | `agentcore traces` | View agent traces |
+
+---
+
+## Technical Notes
+
+### AgentCore SDK Endpoints
+
+The `BedrockAgentCoreApp` Starlette server registers these routes on port 8080:
+
+| Route | Method | Description |
+|-------|--------|-------------|
+| `/invocations` | POST | Agent entrypoint (via `@app.entrypoint`) |
+| `/ping` | GET | Health/liveness — returns `{"status": "Healthy"}` |
+| `/ws` | WS | WebSocket interface |
+
+### boto3 AWS Mode
+
+The UI calls the deployed runtime via the **`bedrock-agentcore`** boto3 client
+(not `bedrock-agentcore-runtime` — that service name does not exist):
+
+```python
+client = boto3.client("bedrock-agentcore", region_name="ap-south-1")
+resp = client.invoke_agent_runtime(
+    agentRuntimeArn="arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/...",
+    payload=json.dumps({"prompt": prompt}).encode("utf-8"),
+)
+body = resp["response"]   # StreamingBody
+```
+
+### SSE Response Parsing
+
+The AgentCore runtime streams its response as **Server-Sent Events** lines:
+
+```
+data: "<thinking"
+data: ">"
+data: " \nThe answer is..."
+```
+
+The UI reads all chunks, then parses each `data:` line by JSON-decoding the value
+(resolving `\n`, `\t`, unicode escapes), and joins them into a single string before
+rendering with `st.markdown()`.
+
+### Refreshing AWS Credentials (STS tokens)
+
+Credentials expire. Always recreate the container (not just restart) after refreshing:
+
+```bash
+# Refresh credentials
+agentcore dev   # Ctrl+C once .env.local is written
+
+# Recreate container to pick up new credentials
+docker compose -f docker-compose.aws.yml up --build -d
+# NOTE: `docker compose restart` does NOT re-read env_file — must use `up`
+```
 
 ---
 
