@@ -7,7 +7,17 @@
     "agentcore:created-by": "agentcore-cli",
     "agentcore:project-name": "barttagentcorerepo"
   },
-  "runtimes": [],
+  "runtimes": [
+    {
+      "name": "barttagent",
+      "build": "Container",
+      "entrypoint": "main.py",
+      "codeLocation": "app/barttagent/",
+      "runtimeVersion": "PYTHON_3_14",
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP"
+    }
+  ],
   "memories": [],
   "credentials": [],
   "evaluators": [],

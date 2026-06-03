@@ -1,3 +1,17 @@
 {
-  "targets": {}
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "barttagent": {
+            "runtimeId": "barttagentcorerepo_barttagent-30zRtU516q",
+            "runtimeArn": "arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-30zRtU516q",
+            "roleArn": "arn:aws:iam::662864911724:role/AgentCore-barttagentcorer-ApplicationAgentBarttagen-LhU2ACuXKdlZ"
+          }
+        },
+        "stackName": "AgentCore-barttagentcorerepo-default",
+        "deployHash": "953cf58ed9f32127"
+      }
+    }
+  }
 }
