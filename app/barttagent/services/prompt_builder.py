@@ -60,7 +60,9 @@ def build_context(retrieval_results: dict[str, Any]) -> str:
         source: str = metadata[i].get("source", "unknown") if i < len(metadata) else "unknown"
         section = f"Source: {source}\n\n{chunk}"
 
-        available = MAX_CONTEXT_CHARS - total_chars
+        # Account for the separator that will be prepended when joining.
+        sep_overhead = len(_SECTION_SEPARATOR) if sections else 0
+        available = MAX_CONTEXT_CHARS - total_chars - sep_overhead
         if available <= 0:
             break
 
@@ -71,7 +73,7 @@ def build_context(retrieval_results: dict[str, Any]) -> str:
             break
 
         sections.append(section)
-        total_chars += len(section)
+        total_chars += len(section) + sep_overhead
 
     return _SECTION_SEPARATOR.join(sections)
 
