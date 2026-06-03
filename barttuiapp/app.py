@@ -75,7 +75,9 @@ with st.sidebar:
         st.markdown("**Backend Status**")
         try:
             r = requests.get(HEALTH_URL, timeout=3)
-            if r.status_code < 400:
+            # Any HTTP response (even 404) means the container is reachable.
+            # The AgentCore runtime doesn't always expose /health.
+            if r.status_code < 500:
                 st.success("✅ Connected")
             else:
                 st.warning(f"⚠️ HTTP {r.status_code}")
