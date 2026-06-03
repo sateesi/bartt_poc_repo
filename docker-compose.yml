@@ -65,7 +65,7 @@ services:
     environment:
       # Service name 'barttagent' resolves via the Docker bridge network
       AGENT_URL: "http://barttagent:8080"
-      INVOKE_PATH: "/invoke"
+      INVOKE_PATH: "/invocations"
     depends_on:
       - barttagent
     restart: unless-stopped

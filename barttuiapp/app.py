@@ -19,9 +19,9 @@ INVOKE_MODE = os.getenv("INVOKE_MODE", "local")   # "local" | "aws"
 
 # Local mode settings
 AGENT_URL   = os.getenv("AGENT_URL", "http://localhost:8080")
-INVOKE_PATH = os.getenv("INVOKE_PATH", "/invoke")
+INVOKE_PATH = os.getenv("INVOKE_PATH", "/invocations")
 INVOKE_URL  = f"{AGENT_URL}{INVOKE_PATH}"
-HEALTH_URL  = f"{AGENT_URL}/health"
+HEALTH_URL  = f"{AGENT_URL}/ping"
 
 # AWS mode settings
 RUNTIME_ID  = os.getenv("RUNTIME_ID", "")
@@ -75,12 +75,13 @@ with st.sidebar:
         st.markdown("**Backend Status**")
         try:
             r = requests.get(HEALTH_URL, timeout=3)
-            # Any HTTP response (even 404) means the container is reachable.
-            # The AgentCore runtime doesn't always expose /health.
-            if r.status_code < 500:
+            # /ping returns 200 when the AgentCore runtime is ready
+            if r.status_code == 200:
                 st.success("✅ Connected")
-            else:
+            elif r.status_code < 500:
                 st.warning(f"⚠️ HTTP {r.status_code}")
+            else:
+                st.error(f"❌ HTTP {r.status_code}")
         except requests.exceptions.ConnectionError:
             st.error("❌ Unreachable")
         except Exception:

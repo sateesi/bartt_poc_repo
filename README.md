@@ -90,7 +90,7 @@ open http://localhost:8501
 |----------|---------|-------------|
 | `INVOKE_MODE` | `local` | Routing mode — `local` or `aws` |
 | `AGENT_URL` | `http://barttagent:8080` | Backend URL (Docker service name) |
-| `INVOKE_PATH` | `/invoke` | Agent invoke endpoint |
+| `INVOKE_PATH` | `/invocations` | Agent invoke endpoint |
 
 ---
 
