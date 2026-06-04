@@ -17,7 +17,7 @@ function sanitize(name: string): string {
 }
 
 function toStackName(projectName: string, targetName: string): string {
-  return `AgentCore-${sanitize(projectName)}-${sanitize(targetName)}`;
+  return `bartt-AgentCore-${sanitize(projectName)}-${sanitize(targetName)}`;
 }
 
 async function main() {
@@ -115,6 +115,7 @@ async function main() {
       tags: {
         'agentcore:project-name': spec.name,
         'agentcore:target-name': target.name,
+        'name': 'bartt',
       },
     });
   }

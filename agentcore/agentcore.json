@@ -5,7 +5,8 @@
   "managedBy": "CDK",
   "tags": {
     "agentcore:created-by": "agentcore-cli",
-    "agentcore:project-name": "barttagentcorerepo"
+    "agentcore:project-name": "barttagentcorerepo",
+    "name": "bartt"
   },
   "runtimes": [
     {
