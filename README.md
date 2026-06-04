@@ -6,6 +6,16 @@
 
 This repository contains:
 
+## Implementation Overview
+
+The BARTT agent is a **Strands-based AI agent** hosted on Amazon Bedrock AgentCore. It exposes a
+Streamlit chat interface where users can ask reconciliation and trade tieout questions. The
+agent runs inside an AWS-managed container (AgentCore runtime) and is invoked either via the
+`bedrock-agentcore` boto3 client (AWS mode) or a locally running Docker container (local mode).
+Infrastructure is defined as AWS CDK (TypeScript) in `agentcore/cdk/` and provisioned with a
+single `agentcore deploy` command. Temporary STS credentials are managed automatically by the
+AgentCore CLI (`agentcore dev`) and stored in `agentcore/.env.local`.
+
 | Component | Location | Description |
 | --------- | -------- | ----------- |
 | **barttagent** | `app/barttagent/` | Python agent backend — deployed to AWS Bedrock AgentCore |
@@ -18,11 +28,11 @@ This repository contains:
 
 | Property | Value |
 | -------- | ----- |
-| Runtime ID | `barttagentcorerepo_barttagent-30zRtU516q` |
+| Runtime ID | `barttagentcorerepo_barttagent-5qiZ7J3KGa` |
 | Region | `ap-south-1` |
 | Network | PUBLIC |
 | Model | `apac.amazon.nova-pro-v1:0` (Amazon Nova Pro — APAC inference profile) |
-| Runtime ARN | `arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-30zRtU516q` |
+| Runtime ARN | `arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-5qiZ7J3KGa` |
 
 ---
 
@@ -120,8 +130,8 @@ open http://localhost:8501
 | Variable | Default | Description |
 | -------- | ------- | ----------- |
 | `INVOKE_MODE` | `aws` | Routes invocation to boto3 AgentCore client |
-| `RUNTIME_ARN` | `arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-30zRtU516q` | Full runtime ARN (preferred over RUNTIME_ID) |
-| `RUNTIME_ID` | `barttagentcorerepo_barttagent-30zRtU516q` | Runtime ID (fallback if RUNTIME_ARN not set) |
+| `RUNTIME_ARN` | `arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-5qiZ7J3KGa` | Full runtime ARN (preferred over RUNTIME_ID) |
+| `RUNTIME_ID` | `barttagentcorerepo_barttagent-5qiZ7J3KGa` | Runtime ID (fallback if RUNTIME_ARN not set) |
 | `AWS_REGION` | `ap-south-1` | AWS region |
 | `AWS_ACCESS_KEY_ID` | from `agentcore/.env.local` | Temp STS credentials |
 | `AWS_SECRET_ACCESS_KEY` | from `agentcore/.env.local` | Temp STS credentials |
