@@ -1,0 +1,378 @@
+{
+ "Description": "Bedrock Knowledge Base infrastructure for barttagentcorerepo (ap-south-1)",
+ "Resources": {
+  "DataBucketE3889A50": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "barttagentcorerepo-kb-data-662864911724-ap-south-1",
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain"
+  },
+  "DataBucketPolicy3231C704": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "DataBucketE3889A50"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DataBucketE3889A50",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DataBucketE3889A50",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "KnowledgeBaseRoleA2B317B9": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Condition": {
+        "StringEquals": {
+         "aws:SourceAccount": "662864911724"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "bedrock.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Allows the Bedrock Knowledge Base to read S3 and access OpenSearch Serverless",
+    "RoleName": "barttagentcorerepo-bedrock-kb-role-ap-south-1"
+   }
+  },
+  "KnowledgeBaseRoleDefaultPolicyB3F66209": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DataBucketE3889A50",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DataBucketE3889A50",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "bedrock:InvokeModel",
+       "Effect": "Allow",
+       "Resource": "arn:aws:bedrock:ap-south-1::foundation-model/amazon.titan-embed-text-v2:0",
+       "Sid": "BedrockEmbeddingAccess"
+      },
+      {
+       "Action": "aoss:APIAccessAll",
+       "Effect": "Allow",
+       "Resource": "arn:aws:aoss:ap-south-1:662864911724:collection/*",
+       "Sid": "AossApiAccess"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "KnowledgeBaseRoleDefaultPolicyB3F66209",
+    "Roles": [
+     {
+      "Ref": "KnowledgeBaseRoleA2B317B9"
+     }
+    ]
+   }
+  },
+  "AossEncryptionPolicy": {
+   "Type": "AWS::OpenSearchServerless::SecurityPolicy",
+   "Properties": {
+    "Name": "barttagentcorerepo-kb-enc",
+    "Policy": "[{\"Rules\":[{\"ResourceType\":\"collection\",\"Resource\":[\"collection/barttagentcorerepo-kb\"]}],\"AWSOwnedKey\":true}]",
+    "Type": "encryption"
+   }
+  },
+  "AossNetworkPolicy": {
+   "Type": "AWS::OpenSearchServerless::SecurityPolicy",
+   "Properties": {
+    "Name": "barttagentcorerepo-kb-net",
+    "Policy": "[{\"Rules\":[{\"ResourceType\":\"collection\",\"Resource\":[\"collection/barttagentcorerepo-kb\"]},{\"ResourceType\":\"dashboard\",\"Resource\":[\"collection/barttagentcorerepo-kb\"]}],\"AllowFromPublic\":true}]",
+    "Type": "network"
+   }
+  },
+  "AossCollection": {
+   "Type": "AWS::OpenSearchServerless::Collection",
+   "Properties": {
+    "Description": "Vector search collection for barttagentcorerepo BARTT Knowledge Base",
+    "Name": "barttagentcorerepo-kb",
+    "Type": "VECTORSEARCH"
+   },
+   "DependsOn": [
+    "AossEncryptionPolicy",
+    "AossNetworkPolicy"
+   ]
+  },
+  "AossAccessPolicy": {
+   "Type": "AWS::OpenSearchServerless::AccessPolicy",
+   "Properties": {
+    "Name": "barttagentcorerepo-kb-access",
+    "Policy": {
+     "Fn::Join": [
+      "",
+      [
+       "[{\"Rules\":[{\"ResourceType\":\"collection\",\"Resource\":[\"collection/barttagentcorerepo-kb\"],\"Permission\":[\"aoss:CreateCollectionItems\",\"aoss:DeleteCollectionItems\",\"aoss:UpdateCollectionItems\",\"aoss:DescribeCollectionItems\"]},{\"ResourceType\":\"index\",\"Resource\":[\"index/barttagentcorerepo-kb/*\"],\"Permission\":[\"aoss:CreateIndex\",\"aoss:DeleteIndex\",\"aoss:UpdateIndex\",\"aoss:DescribeIndex\",\"aoss:ReadDocument\",\"aoss:WriteDocument\"]}],\"Principal\":[\"",
+       {
+        "Fn::GetAtt": [
+         "KnowledgeBaseRoleA2B317B9",
+         "Arn"
+        ]
+       },
+       "\",\"arn:aws:iam::662864911724:root\"]}]"
+      ]
+     ]
+    },
+    "Type": "data"
+   },
+   "DependsOn": [
+    "AossCollection"
+   ]
+  },
+  "KnowledgeBase": {
+   "Type": "AWS::Bedrock::KnowledgeBase",
+   "Properties": {
+    "Description": "BARTT Knowledge Base — grounded answers from BARTT business documents",
+    "KnowledgeBaseConfiguration": {
+     "Type": "VECTOR",
+     "VectorKnowledgeBaseConfiguration": {
+      "EmbeddingModelArn": "arn:aws:bedrock:ap-south-1::foundation-model/amazon.titan-embed-text-v2:0"
+     }
+    },
+    "Name": "barttagentcorerepo-knowledge-base",
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "KnowledgeBaseRoleA2B317B9",
+      "Arn"
+     ]
+    },
+    "StorageConfiguration": {
+     "OpensearchServerlessConfiguration": {
+      "CollectionArn": {
+       "Fn::GetAtt": [
+        "AossCollection",
+        "Arn"
+       ]
+      },
+      "FieldMapping": {
+       "MetadataField": "metadata",
+       "TextField": "text",
+       "VectorField": "embedding"
+      },
+      "VectorIndexName": "bartt-kb-index"
+     },
+     "Type": "OPENSEARCH_SERVERLESS"
+    }
+   },
+   "DependsOn": [
+    "AossAccessPolicy",
+    "AossCollection"
+   ]
+  },
+  "S3DataSource": {
+   "Type": "AWS::Bedrock::DataSource",
+   "Properties": {
+    "DataSourceConfiguration": {
+     "S3Configuration": {
+      "BucketArn": {
+       "Fn::GetAtt": [
+        "DataBucketE3889A50",
+        "Arn"
+       ]
+      }
+     },
+     "Type": "S3"
+    },
+    "KnowledgeBaseId": {
+     "Fn::GetAtt": [
+      "KnowledgeBase",
+      "KnowledgeBaseId"
+     ]
+    },
+    "Name": "barttagentcorerepo-s3-data-source",
+    "VectorIngestionConfiguration": {
+     "ChunkingConfiguration": {
+      "ChunkingStrategy": "FIXED_SIZE",
+      "FixedSizeChunkingConfiguration": {
+       "MaxTokens": 512,
+       "OverlapPercentage": 20
+      }
+     }
+    }
+   }
+  }
+ },
+ "Outputs": {
+  "KnowledgeBaseId": {
+   "Description": "Bedrock Knowledge Base ID — set as KNOWLEDGE_BASE_ID on the agent runtime",
+   "Value": {
+    "Fn::GetAtt": [
+     "KnowledgeBase",
+     "KnowledgeBaseId"
+    ]
+   },
+   "Export": {
+    "Name": "barttagentcorerepo-knowledge-base-id"
+   }
+  },
+  "DataSourceId": {
+   "Description": "Bedrock Data Source ID — used to trigger KB ingestion sync",
+   "Value": {
+    "Fn::GetAtt": [
+     "S3DataSource",
+     "DataSourceId"
+    ]
+   },
+   "Export": {
+    "Name": "barttagentcorerepo-data-source-id"
+   }
+  },
+  "S3BucketName": {
+   "Description": "S3 bucket for BARTT knowledge base documents",
+   "Value": {
+    "Ref": "DataBucketE3889A50"
+   },
+   "Export": {
+    "Name": "barttagentcorerepo-kb-bucket-name"
+   }
+  },
+  "AossCollectionEndpoint": {
+   "Description": "OpenSearch Serverless collection endpoint — needed to create the vector index",
+   "Value": {
+    "Fn::GetAtt": [
+     "AossCollection",
+     "CollectionEndpoint"
+    ]
+   },
+   "Export": {
+    "Name": "barttagentcorerepo-aoss-endpoint"
+   }
+  },
+  "AossCollectionArn": {
+   "Description": "OpenSearch Serverless collection ARN",
+   "Value": {
+    "Fn::GetAtt": [
+     "AossCollection",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "barttagentcorerepo-aoss-arn"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

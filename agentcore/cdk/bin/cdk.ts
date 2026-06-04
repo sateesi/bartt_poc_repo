@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { AgentCoreStack } from '../lib/cdk-stack';
-import { KnowledgeBaseStack } from '../lib/knowledge-base-stack';
 import { ConfigIO, type AwsDeploymentTarget } from '@aws/agentcore-cdk';
 import { App, type Environment } from 'aws-cdk-lib';
 import * as path from 'path';
@@ -115,27 +114,6 @@ async function main() {
       description: `AgentCore stack for ${spec.name} deployed to ${target.name} (${target.region})`,
       tags: {
         'agentcore:project-name': spec.name,
-        'agentcore:target-name': target.name,
-      },
-    });
-  }
-
-  // ------------------------------------------------------------------
-  // Knowledge Base stack — one per target, independent of the AgentCore
-  // runtime lifecycle so it can be deployed separately:
-  //   cd agentcore/cdk && npm run cdk deploy "KnowledgeBase-*"
-  // ------------------------------------------------------------------
-  for (const target of targets) {
-    const env = toEnvironment(target);
-    const kbStackName = `KnowledgeBase-${sanitize(spec.name)}-${sanitize(target.name)}`;
-
-    new KnowledgeBaseStack(app, kbStackName, {
-      projectName: spec.name,
-      env,
-      description: `Bedrock Knowledge Base infrastructure for ${spec.name} (${target.region})`,
-      tags: {
-        'agentcore:project-name': spec.name,
-        'agentcore:stack-type': 'knowledge-base',
         'agentcore:target-name': target.name,
       },
     });

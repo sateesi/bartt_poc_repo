@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "a6ffbd43a99e5d87e081fa79e892f977e36b1f8f9ff7fe27319e76e0280728f9": {
+      "displayName": "KnowledgeBase-barttagentcorerepo-default Template",
+      "source": {
+        "path": "KnowledgeBase-barttagentcorerepo-default.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "662864911724-ap-south-1-6453227e": {
+          "bucketName": "cdk-hnb659fds-assets-662864911724-ap-south-1",
+          "objectKey": "a6ffbd43a99e5d87e081fa79e892f977e36b1f8f9ff7fe27319e76e0280728f9.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::662864911724:role/cdk-hnb659fds-file-publishing-role-662864911724-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

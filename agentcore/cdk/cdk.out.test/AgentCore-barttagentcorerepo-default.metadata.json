@@ -1,0 +1,269 @@
+{
+  "/AgentCore-barttagentcorerepo-default": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    },
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "agentcore:project-name",
+          "value": "barttagentcorerepo"
+        },
+        {
+          "key": "agentcore:target-name",
+          "value": "default"
+        }
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/StackNameOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "StackNameOutput"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:36:9)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in aws-cdk-lib...",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:116:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in aws-cdk-lib...",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:116:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/RuntimeIdOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentRuntimeIdOutputC7E2FB10"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/RuntimeArnOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentRuntimeArnOutputCFD88438"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/RoleArnOutput": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentRoleArnOutput590BC6D9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/ContainerBuildProject/ContainerBuildExecutionRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ContainerBuildProjectContainerBuildExecutionRole69AD3217"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/ContainerBuildProject/ContainerBuildProject/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ContainerBuildProject5A4F8922"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/Runtime/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentRuntime8FA7F4CF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/ContainerBuildProject/ContainerBuildExecutionRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ContainerBuildProjectContainerBuildExecutionRoleDefaultPolicyE43AE239"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws\\agentcore-cdk...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/AgentEcrRepository/EncryptionKey/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentAgentEcrRepositoryEncryptionKey7EE7E994"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/AgentEcrRepository/Repository/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentAgentEcrRepository39E77FBE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/ContainerImageBuilder/ContainerBuildHandler/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentContainerImageBuilderContainerBuildHandler7E81E5C3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/ContainerImageBuilder/ContainerBuildTrigger/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentContainerImageBuilderContainerBuildTrigger40AECE65"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/Runtime/ExecutionRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentRuntimeExecutionRole166AB743"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/ContainerImageBuilder/ContainerBuildHandler/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentContainerImageBuilderContainerBuildHandlerServiceRole759471B1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:84:9)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/Runtime/ExecutionRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentRuntimeExecutionRoleDefaultPolicy186CBB85"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws\\agentcore-cdk...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/AgentCore-barttagentcorerepo-default/Application/AgentBarttagent/ContainerImageBuilder/ContainerBuildHandler/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApplicationAgentBarttagentContainerImageBuilderContainerBuildHandlerServiceRoleDefaultPolicy9ECB92D5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new AgentCoreApplication in @aws\\agentcore-cdk...",
+        "new AgentCoreStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\cdk-stack.js:24:28)"
+      ]
+    }
+  ]
+}

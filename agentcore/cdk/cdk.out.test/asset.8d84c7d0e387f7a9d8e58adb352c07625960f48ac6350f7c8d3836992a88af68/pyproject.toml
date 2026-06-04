@@ -11,11 +11,20 @@ requires-python = ">=3.10"
 dependencies = [
     "aws-opentelemetry-distro",
     "bedrock-agentcore >= 1.9.1",
+    "boto3 >= 1.35.0",
     "botocore[crt] >= 1.35.0",
     "mcp >= 1.19.0",
     "strands-agents >= 1.13.0",
-    
 ]
+
+[project.optional-dependencies]
+test = [
+    "pytest >= 8.0",
+    "pytest-asyncio >= 0.23",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]

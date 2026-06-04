@@ -1,0 +1,251 @@
+{
+  "/KnowledgeBase-barttagentcorerepo-default": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    },
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "agentcore:project-name",
+          "value": "barttagentcorerepo"
+        },
+        {
+          "key": "agentcore:stack-type",
+          "value": "knowledge-base"
+        },
+        {
+          "key": "agentcore:target-name",
+          "value": "default"
+        }
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/AossEncryptionPolicy": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AossEncryptionPolicy"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:85:34)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/AossNetworkPolicy": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AossNetworkPolicy"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:104:31)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/AossCollection": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AossCollection"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:120:32)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/AossAccessPolicy": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AossAccessPolicy"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:142:30)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/KnowledgeBase": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBase"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:180:31)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/S3DataSource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "S3DataSource"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:209:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/KnowledgeBaseId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBaseId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:231:9)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/DataSourceId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DataSourceId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:236:9)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/S3BucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "S3BucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:241:9)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/AossCollectionEndpoint": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AossCollectionEndpoint"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:246:9)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/AossCollectionArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AossCollectionArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:251:9)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in aws-cdk-lib...",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:116:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in aws-cdk-lib...",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:116:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/DataBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DataBucketE3889A50"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:43:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/KnowledgeBaseRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBaseRoleA2B317B9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in aws-cdk-lib...",
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:56:24)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/DataBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DataBucketPolicy3231C704"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new KnowledgeBaseStack (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\lib\\knowledge-base-stack.js:43:28)",
+        "main (C:\\Users\\satees\\OneDrive - kochind.com\\KOCH-WORK\\KOCH KMT\\KMT-BARTT\\barttagentcorerepo\\agentcore\\cdk\\dist\\bin\\cdk.js:105:9)"
+      ]
+    }
+  ],
+  "/KnowledgeBase-barttagentcorerepo-default/KnowledgeBaseRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBaseRoleDefaultPolicyB3F66209"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

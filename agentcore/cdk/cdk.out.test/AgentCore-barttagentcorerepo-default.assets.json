@@ -1,0 +1,36 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "8d84c7d0e387f7a9d8e58adb352c07625960f48ac6350f7c8d3836992a88af68": {
+      "displayName": "Application/AgentBarttagent/ContainerSourceAsset/SourceAsset",
+      "source": {
+        "path": "asset.8d84c7d0e387f7a9d8e58adb352c07625960f48ac6350f7c8d3836992a88af68",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "662864911724-ap-south-1-97245e88": {
+          "bucketName": "cdk-hnb659fds-assets-662864911724-ap-south-1",
+          "objectKey": "8d84c7d0e387f7a9d8e58adb352c07625960f48ac6350f7c8d3836992a88af68.zip",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::662864911724:role/cdk-hnb659fds-file-publishing-role-662864911724-ap-south-1"
+        }
+      }
+    },
+    "a1729b475d719038391da1e1dcf0f0178b1978d8873fcfd3ae52499850a952cd": {
+      "displayName": "AgentCore-barttagentcorerepo-default Template",
+      "source": {
+        "path": "AgentCore-barttagentcorerepo-default.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "662864911724-ap-south-1-f1eae06f": {
+          "bucketName": "cdk-hnb659fds-assets-662864911724-ap-south-1",
+          "objectKey": "a1729b475d719038391da1e1dcf0f0178b1978d8873fcfd3ae52499850a952cd.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::662864911724:role/cdk-hnb659fds-file-publishing-role-662864911724-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -1,0 +1,9 @@
+{
+  "KnowledgeBase-barttagentcorerepo-default": {
+    "KnowledgeBaseId": "HYFQSNXTVA",
+    "S3BucketName": "barttagentcorerepo-kb-data-662864911724-ap-south-1",
+    "AossCollectionEndpoint": "https://fyeu0k05idbu490d85af.ap-south-1.aoss.amazonaws.com",
+    "DataSourceId": "LGR5F3OWCA",
+    "AossCollectionArn": "arn:aws:aoss:ap-south-1:662864911724:collection/fyeu0k05idbu490d85af"
+  }
+}
