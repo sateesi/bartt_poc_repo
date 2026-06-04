@@ -19,6 +19,7 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "typeRoots": ["./node_modules/@types"],
     "rootDir": ".",
     "outDir": "dist"

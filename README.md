@@ -7,7 +7,7 @@
 This repository contains:
 
 | Component | Location | Description |
-|-----------|----------|-------------|
+| --------- | -------- | ----------- |
 | **barttagent** | `app/barttagent/` | Python agent backend — deployed to AWS Bedrock AgentCore |
 | **barttuiapp** | `barttuiapp/` | Streamlit chat UI — runs locally via Docker |
 | **AgentCore config** | `agentcore/` | CLI config, CDK infra, AWS targets, local credentials |
@@ -17,7 +17,7 @@ This repository contains:
 ## Deployed Runtime
 
 | Property | Value |
-|----------|-------|
+| -------- | ----- |
 | Runtime ID | `barttagentcorerepo_barttagent-30zRtU516q` |
 | Region | `ap-south-1` |
 | Network | PUBLIC |
@@ -28,7 +28,7 @@ This repository contains:
 
 ## Project Structure
 
-```
+```text
 barttagentcorerepo/
 ├── README.md
 ├── docker-compose.yml          # Local mode — UI + backend containers
@@ -56,7 +56,7 @@ barttagentcorerepo/
 ## Prerequisites
 
 | Tool | Notes |
-|------|-------|
+| ---- | ----- |
 | **Docker Desktop** | Required for both run modes |
 | **Python 3.10+** + **uv** | For local agent dev only |
 | **Node.js 20+** | Required for AgentCore CLI |
@@ -79,15 +79,15 @@ open http://localhost:8501
 
 **Services started:**
 
-| Container | Port | Description |
-|-----------|------|-------------|
+| Container    | Port | Description                                      |
+| ------------ | ---- | ------------------------------------------------ |
 | `barttagent` | 8080 | Agent backend — `POST /invocations`, `GET /ping` |
-| `barttuiapp` | 8501 | Streamlit chat UI |
+| `barttuiapp` | 8501 | Streamlit chat UI                                |
 
 **Environment variables used (`INVOKE_MODE=local`):**
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| -------- | ------- | ----------- |
 | `INVOKE_MODE` | `local` | Routing mode — `local` or `aws` |
 | `AGENT_URL` | `http://barttagent:8080` | Backend URL (Docker service name) |
 | `INVOKE_PATH` | `/invocations` | Agent invoke endpoint |
@@ -118,7 +118,7 @@ open http://localhost:8501
 **Environment variables used (`INVOKE_MODE=aws`):**
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| -------- | ------- | ----------- |
 | `INVOKE_MODE` | `aws` | Routes invocation to boto3 AgentCore client |
 | `RUNTIME_ARN` | `arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-30zRtU516q` | Full runtime ARN (preferred over RUNTIME_ID) |
 | `RUNTIME_ID` | `barttagentcorerepo_barttagent-30zRtU516q` | Runtime ID (fallback if RUNTIME_ARN not set) |
@@ -203,7 +203,7 @@ credentials to `agentcore/.env.local`.
 ## AgentCore CLI Reference
 
 | Command | Description |
-|---------|-------------|
+| ------- | ----------- |
 | `agentcore dev` | Run agent locally with hot-reload + refresh credentials |
 | `agentcore deploy` | Deploy agent to AWS via CDK |
 | `agentcore status` | Show deployment status and runtime ID |
@@ -221,7 +221,7 @@ credentials to `agentcore/.env.local`.
 The `BedrockAgentCoreApp` Starlette server registers these routes on port 8080:
 
 | Route | Method | Description |
-|-------|--------|-------------|
+| ----- | ------ | ----------- |
 | `/invocations` | POST | Agent entrypoint (via `@app.entrypoint`) |
 | `/ping` | GET | Health/liveness — returns `{"status": "Healthy"}` |
 | `/ws` | WS | WebSocket interface |
@@ -244,7 +244,7 @@ body = resp["response"]   # StreamingBody
 
 The AgentCore runtime streams its response as **Server-Sent Events** lines:
 
-```
+```text
 data: "<thinking"
 data: ">"
 data: " \nThe answer is..."
