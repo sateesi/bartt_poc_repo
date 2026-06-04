@@ -160,6 +160,33 @@ agentcore status
 
 ---
 
+## Tearing Down / Cleanup
+
+To destroy all deployed AWS resources (AgentCore runtime, IAM roles, ECR image, etc.):
+
+```bash
+# From the agentcore/cdk/ directory
+cd agentcore/cdk
+npx cdk destroy --all --force
+```
+
+Or delete the CloudFormation stack directly via AWS CLI:
+
+```bash
+aws cloudformation delete-stack --stack-name "bartt-AgentCore-barttagentcorerepo-default" --region ap-south-1
+```
+
+After teardown, reset the CLI state so the next `agentcore deploy` starts fresh:
+
+```bash
+# Reset deployed state (PowerShell)
+Set-Content agentcore/.cli/deployed-state.json '{}'
+```
+
+> **Note:** The `CDKToolkit` CloudFormation stack and the `cdk-hnb659fds-container-assets-*` ECR repo are shared CDK bootstrap resources — do **not** delete them.
+
+---
+
 ## Development — Agent Backend
 
 Run the agent locally with hot-reload (without Docker):
@@ -183,6 +210,7 @@ credentials to `agentcore/.env.local`.
 | `agentcore invoke` | Invoke agent (local or deployed) from CLI |
 | `agentcore logs` | View agent CloudWatch logs |
 | `agentcore traces` | View agent traces |
+| `cd agentcore/cdk && npx cdk destroy --all --force` | Tear down all deployed AWS resources |
 
 ---
 
