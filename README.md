@@ -345,6 +345,66 @@ docker compose -f docker-compose.aws.yml up --build -d
 
 ---
 
+## Architectural Review — Current Design vs Recommended Path
+
+### What Works Well ✅
+
+| Aspect | Why It Is Good |
+| --- | --- |
+| RAG over BARTT xref / rules data | Correct — 400+ BARTT codes, contract specs, and xref mappings are genuinely hard to query without semantic search |
+| AgentCore + Strands | Right managed platform for a POC — no ECS/EKS ops overhead, deploy with one command |
+| CDK IaC | Production-grade reproducible infrastructure from day one |
+| Streamlit UI | Fast to demo, effective for stakeholder buy-in |
+
+---
+
+### Core Design Gap ⚠️
+
+**BARTT is a deterministic reconciliation problem, not a conversational Q&A problem.**
+
+Trade tieout means: *"Does the position from Goldman Sachs equal the position from KST for contract `CL-NYM-FT` on date X?"* — that is a **SQL join + delta comparison**, not something an LLM should compute. If the agent hallucinates a reconciliation result, it has real financial consequences.
+
+The current design is a **knowledge assistant** (answer questions about BARTT rules/xref) — not yet an **autonomous reconciliation agent** (investigate and explain actual trade breaks using live data).
+
+---
+
+### Recommended Tool Additions (Phase 2)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              BARTT AI Agent (Strands)                   │
+│                                                         │
+│  Tool 1: query_bartt_db()     ← read-only SQL queries   │
+│  Tool 2: retrieve_kb()        ← RAG rules / xref (keep) │
+│  Tool 3: get_break_report()   ← fetch real trade breaks │
+│  Tool 4: explain_bartt_code() ← look up xref contract   │
+│  Tool 5: compare_positions()  ← run tieout delta logic  │
+└─────────────────────────────────────────────────────────┘
+```
+
+| What to Add / Change | Why | Effort |
+| --- | --- | --- |
+| **DB query tools** — read-only `pyodbc`/`pymssql` Strands `@tool` functions against BARTT SQL DB | Agent can answer *"Show all open breaks for Goldman today"* with real data, not just docs | Medium |
+| **Reconciliation tools** — wrap existing BARTT stored procedures/queries as `@tool` functions | Agent can actually run tieout logic and explain the result to the user | Medium |
+| **Scoped RAG** — index only rules, xref mappings, and contract specs (remove unrelated docs) | Faster retrieval, more precise answers on BARTT code definitions, lower token cost | Low |
+| **Evaluation layer** — populate `evaluators/` with golden Q&A pairs against known break scenarios | Validate agent answers match expected reconciliation outputs before production | Medium |
+| **Production UI** — React/Next.js dashboard with embedded chat panel | Show trade breaks as tables/charts alongside AI explanations; replace Streamlit | High |
+
+---
+
+### Recommended Phased Roadmap
+
+| Phase | Goal | Key Deliverable |
+| --- | --- | --- |
+| **Phase 1 — Current POC ✅** | *"Ask questions about BARTT rules and xref data"* | Knowledge assistant over static docs + xref JSON |
+| **Phase 2 — DB Tools (next sprint)** | *"Show me all unmatched Goldman trades for CL contracts this week"* | Read-only SQL tools connected to BARTT database; agent returns live break data |
+| **Phase 3 — Autonomous Reconciliation** | *"Investigate this break, find root cause, suggest resolution"* | Agent queries DB → looks up contract rules → runs delta comparison → flags for human review |
+| **Phase 4 — Production** | Embedded assistant in existing BARTT ops dashboard | Replace Streamlit with proper UI; add evaluations, alerting, and audit trail |
+
+> **Bottom line:** The POC proves the concept well. The highest-value next step is not more AI — it is connecting the agent to the **actual BARTT database** with real SQL tools so it answers with live data rather than retrieved document chunks. That transforms it from a knowledge assistant into a genuine reconciliation analyst.
+
+---
+
 ## AWS Services — Purpose, Cost & Production Recommendations
 
 > All costs in **USD · ap-south-1 pricing · June 2025**.
