@@ -170,6 +170,72 @@ agentcore status
 
 ---
 
+## Knowledge Base / RAG
+
+The agent uses a Bedrock Knowledge Base backed by OpenSearch Serverless to answer
+questions about BARTT trade data, reconciliation rules, and reference data.
+
+### Infrastructure (deployed via CDK)
+
+| Resource | Name / ID |
+| -------- | --------- |
+| S3 data bucket | `bartt-kb-data-source` |
+| OSS collection | `bartt-kb-vectors` |
+| Bedrock KB | `bartt-knowledge-base` |
+| Embedding model | `amazon.titan-embed-text-v2:0` (1 024 dims) |
+
+### First-time setup after `agentcore deploy`
+
+**1. Get the KB and data-source IDs from CDK outputs:**
+
+```bash
+aws cloudformation describe-stacks \
+  --stack-name "bartt-AgentCore-barttagentcorerepo-default" \
+  --region ap-south-1 \
+  --query "Stacks[0].Outputs"
+```
+
+Look for `KnowledgeBaseId` and `KnowledgeBaseDataSourceId`.
+
+**2. Upload source documents to S3:**
+
+```powershell
+# BART requirement / architecture docs
+aws s3 cp ".\BART REQ Docs" s3://bartt-kb-data-source/bart-req-docs/ --recursive
+
+# JSON cross-reference data files
+aws s3 cp ".\BART Requirement Understanding" s3://bartt-kb-data-source/bartt-json/ --recursive
+```
+
+**3. Trigger a Bedrock ingestion job:**
+
+```bash
+aws bedrock-agent start-ingestion-job \
+  --knowledge-base-id <KnowledgeBaseId> \
+  --data-source-id  <KnowledgeBaseDataSourceId> \
+  --region ap-south-1
+```
+
+**4. Set `KNOWLEDGE_BASE_ID` in agentcore.json and docker-compose.aws.yml**, then
+re-deploy:
+
+```bash
+# In agentcore/agentcore.json — update "value" for KNOWLEDGE_BASE_ID
+# In docker-compose.aws.yml  — update KNOWLEDGE_BASE_ID: "<id>"
+agentcore deploy
+```
+
+**5. Re-upload and re-ingest whenever source documents change** (repeat steps 2–3).
+
+### How the agent uses the KB
+
+`AmazonKnowledgeBases` from `strands-agents-tools` is registered as a tool when
+`KNOWLEDGE_BASE_ID` is non-empty. The agent's system prompt instructs it to call
+this tool first for any BARTT-domain question, grounding responses in the
+retrieved chunks.
+
+---
+
 ## Tearing Down / Cleanup
 
 To destroy all deployed AWS resources (AgentCore runtime, IAM roles, ECR image, etc.):

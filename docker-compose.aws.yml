@@ -25,9 +25,11 @@ services:
       - ./agentcore/.env.local
     environment:
       INVOKE_MODE: "aws"
-      RUNTIME_ID: "barttagentcorerepo_barttagent-30zRtU516q"
-      RUNTIME_ARN: "arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-30zRtU516q"
+      RUNTIME_ID: "barttagentcorerepo_barttagent-5qiZ7J3KGa"
+      RUNTIME_ARN: "arn:aws:bedrock-agentcore:ap-south-1:662864911724:runtime/barttagentcorerepo_barttagent-5qiZ7J3KGa"
       AWS_REGION: "ap-south-1"
+      # Set to the Bedrock Knowledge Base ID after running `agentcore deploy`
+      KNOWLEDGE_BASE_ID: ""
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]

@@ -1,6 +1,8 @@
+import os
 from typing import Any
 
 from strands import Agent, tool
+from strands_tools import retrieve
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
 from model.load import load_model
 from mcp_client.client import get_streamable_http_mcp_client
@@ -12,12 +14,16 @@ log = app.logger
 mcp_clients = [get_streamable_http_mcp_client()]
 
 DEFAULT_SYSTEM_PROMPT = """
-You are a helpful assistant. Use tools when appropriate.
+You are a helpful BARTT assistant specialising in broker automated reconciliation
+and trade tieout. When answering questions about BARTT trade data, reconciliation
+rules, reference data, or broker information, ALWAYS use the retrieve tool to
+search the knowledge base first before answering. Use the retrieved context to
+provide accurate, grounded responses.
 """
 
 
 # Define a collection of tools used by the model
-tools = []
+tools: list[Any] = []
 
 # Define a simple function tool
 @tool
@@ -25,6 +31,11 @@ def add_numbers(a: int, b: int) -> int:
     """Return the sum of two numbers"""
     return a+b
 tools.append(add_numbers)
+
+# Add Knowledge Base retrieval tool if KNOWLEDGE_BASE_ID is configured
+_kb_id = os.environ.get("KNOWLEDGE_BASE_ID", "").strip()
+if _kb_id:
+    tools.append(retrieve)
 
 
 # Add MCP client to tools if available

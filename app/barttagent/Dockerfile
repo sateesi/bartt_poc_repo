@@ -33,4 +33,5 @@ USER bedrock_agentcore
 # 9000: A2A Mode
 EXPOSE 8080 8000 9000
 
+# v2 - retrieve tool fix
 CMD ["opentelemetry-instrument", "python", "-m", "main"]
