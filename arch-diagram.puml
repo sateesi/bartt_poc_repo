@@ -1,0 +1,145 @@
+@startuml BARTT_AgentCore_Architecture
+' ─────────────────────────────────────────────────────────────────────────────
+' BARTT – Broker Automated Reconciliation & Trade Tieout
+' Architecture on Amazon Bedrock AgentCore + Strands SDK
+' Self-contained — no remote includes required
+' ─────────────────────────────────────────────────────────────────────────────
+
+skinparam {
+  BackgroundColor     #FAFAFA
+  ArrowColor          #232F3E
+  ArrowThickness      1.5
+  DefaultFontName     Helvetica
+  DefaultFontSize     11
+  RoundCorner         12
+  Padding             10
+  Nodesep             50
+  Ranksep             60
+  ShadowingOff        true
+}
+
+skinparam rectangle {
+  FontColor           #232F3E
+  BorderColor         #7F8C8D
+  BorderThickness     1
+}
+
+skinparam actor {
+  BackgroundColor     #E8DAEF
+  BorderColor         #7D3C98
+  FontColor           #4A235A
+  FontStyle           bold
+}
+
+skinparam note {
+  BackgroundColor     #FFF9C4
+  BorderColor         #F9A825
+  FontSize            10
+}
+
+skinparam arrow {
+  FontSize            10
+}
+
+title <b>BARTT AgentCore Architecture</b>\n<color:#555><i>Broker Automated Reconciliation & Trade Tieout · AWS Bedrock AgentCore + Strands SDK · ap-south-1</i></color>
+
+' ─── ACTORS ──────────────────────────────────────────────────────────────────
+actor "Developer" as dev
+actor "Business User\n(Trade Analyst / Ops)" as user
+
+' ─── DEVELOPER WORKSTATION ───────────────────────────────────────────────────
+rectangle "  <b>Developer Workstation</b>  " as workstation #EDE7F6 {
+  rectangle "<b>barttagent</b>\napp/barttagent/main.py\n(Strands Agent — Python)" as agentcode #D7BDE2
+  rectangle "<b>agentcore CLI</b>\nagentcore deploy\nagentcore dev" as cli #D7BDE2
+  rectangle "<b>Dockerfile</b>\napp/barttagent/Dockerfile" as dockerfile #D7BDE2
+}
+
+' ─── AWS BUILD & REGISTRY ────────────────────────────────────────────────────
+rectangle "  <b>AWS Build & Registry</b>  " as build_section #FFF8E1 {
+  rectangle "☁  <b>AWS CodeBuild</b>\nBuilds Docker image" as codebuild #FFECB3
+  rectangle "📦  <b>Amazon ECR</b>\nbartt-agentcore image registry" as ecr #FFECB3
+}
+
+' ─── AWS CLOUD ───────────────────────────────────────────────────────────────
+rectangle "  <b>AWS Cloud</b>  (ap-south-1)  " as aws_cloud #E3F2FD {
+
+  ' ── AgentCore Runtime ────────────────────────────────────────────────────
+  rectangle "  <b>Amazon Bedrock AgentCore Runtime</b>\n  barttagentcorerepo_barttagent-5qiZ7J3KGa\n  POST /invocations · GET /ping · WS /ws  " as agentcore_runtime #BBDEFB {
+
+    rectangle "  <b>Strands Agent</b> (Python)  " as strands #E3F2FD {
+      rectangle "🗒  <b>System Prompt</b>\nBARTT reconciliation domain\ninstruction: use KB first" as sysprompt #EAF4FB
+      rectangle "🔧  <b>Tools</b>\n• retrieve  (Bedrock KB)\n• MCP Streamable HTTP client\n• add_numbers (utility)" as tools_box #EAF4FB
+    }
+
+    rectangle "🤖  <b>Amazon Nova Pro</b>\napac.amazon.nova-pro-v1:0\n(APAC inference profile)" as nova_pro #BBDEFB
+  }
+
+  ' ── Knowledge Base ───────────────────────────────────────────────────────
+  rectangle "  <b>Knowledge Base / RAG</b>  " as kb_section #E8F5E9 {
+    rectangle "📚  <b>Bedrock Knowledge Base</b>\nbartt-knowledge-base\nRetrieve & RetrieveAndGenerate" as kb #C8E6C9
+    rectangle "🔍  <b>OpenSearch Serverless</b>\nbartt-kb-vectors\nVECTORSEARCH · 1024-dim HNSW/faiss" as oss #C8E6C9
+    rectangle "📐  <b>Amazon Titan Embed Text v2</b>\namazon.titan-embed-text-v2:0\n1024-dim embeddings" as titan_embed #C8E6C9
+    rectangle "🗄  <b>S3 Bucket</b>\nbartt-kb-data-source\n• BART REQ Docs\n• JSON xref data" as s3_kb #C8E6C9
+  }
+
+  ' ── IAM ──────────────────────────────────────────────────────────────────
+  rectangle "🔑  <b>Agent Execution Role</b> (IAM)\nbedrock:Retrieve\nbedrock:RetrieveAndGenerate" as iam_agent #FCE4EC
+  rectangle "🔑  <b>KB IAM Role</b>\nbedrock:InvokeModel\naoss:APIAccessAll · s3:GetObject" as iam_kb #FCE4EC
+
+  ' ── CDK Stack ────────────────────────────────────────────────────────────
+  rectangle "🏗  <b>AWS CDK Stack</b> (TypeScript)\nagentcore/cdk/lib/cdk-stack.ts\nbartt-AgentCore-barttagentcorerepo-default" as cdk_stack #FFF3E0
+}
+
+' ─── LOCAL DOCKER UI ────────────────────────────────────────────────────────
+rectangle "  <b>Local Docker</b>  " as local_docker #FFFDE7 {
+  rectangle "🖥  <b>barttuiapp</b>\nStreamlit Chat UI\nlocalhost:8501" as streamlit #FFF9C4
+}
+
+note right of streamlit
+  <b>INVOKE_MODE=aws</b>
+  boto3 client: bedrock-agentcore
+  SSE streaming response
+  (data: \"...\" chunks → markdown)
+end note
+
+' ─── FLOWS ───────────────────────────────────────────────────────────────────
+
+' Developer → Code → Build → Deploy
+dev         -down-> agentcode    : writes main.py
+dev         -down-> cli          : agentcore deploy
+agentcode   -right-> dockerfile  : packages into
+dockerfile  -right-> codebuild   : triggers build
+codebuild   -right-> ecr         : pushes image
+ecr         -down-> agentcore_runtime : pulls & runs container
+
+' CDK provisions everything
+dev         ..> cdk_stack        : cdk deploy
+cdk_stack   ..> agentcore_runtime : provisions runtime
+cdk_stack   ..> kb_section       : provisions KB + OSS + S3
+cdk_stack   ..> iam_agent        : creates role
+cdk_stack   ..> iam_kb           : creates role
+
+' User → UI → AgentCore
+user        -right-> streamlit   : asks question
+streamlit   -right-> agentcore_runtime : POST /invocations\n{\"prompt\": \"...\"}
+agentcore_runtime -down-> strands : invokes
+
+' Agent internal
+strands     -right-> nova_pro    : LLM inference
+strands     -down-> tools_box    : calls tools
+tools_box   -down-> kb           : retrieve(query)
+kb          -right-> oss         : kNN vector search
+kb          -left-> titan_embed  : embed query
+s3_kb       -up-> kb             : ingestion job\n(source documents)
+
+' IAM grants
+iam_agent   ..> kb               : grants Retrieve
+iam_kb      ..> oss              : grants aoss:APIAccessAll
+iam_kb      ..> s3_kb            : grants s3:GetObject
+iam_kb      ..> titan_embed      : grants bedrock:InvokeModel
+
+' Response
+agentcore_runtime -up-> streamlit : SSE chunks\n(data: \"...\")
+streamlit    -left-> user         : renders markdown
+
+@enduml

@@ -345,9 +345,55 @@ docker compose -f docker-compose.aws.yml up --build -d
 
 ---
 
+## AWS Services — Purpose, Cost & Production Recommendations
+
+> All costs in **USD · ap-south-1 pricing · June 2025**.
+> POC estimates assume light usage (~5–10 users, ~1 M tokens/mo, minimal traffic).
+
+### Service-by-Service Breakdown
+
+| AWS Service | Why It Is Used | POC Monthly Cost | Cost Driver | Production Recommendation | Prod Monthly Estimate |
+| --- | --- | --- | --- | --- | --- |
+| **Amazon Bedrock AgentCore** | Managed serverless container runtime that hosts the Strands Python agent. Handles container lifecycle, scaling, health checks (`/ping`), and `POST /invocations` routing — no ECS/EKS to manage. | ~$50–100 | Compute + invocation count | Keep AgentCore. Enable **auto-scaling** and set minimum replicas to 0 for off-hours savings. | ~$150–400 |
+| **Amazon Nova Pro** (`apac.amazon.nova-pro-v1:0`) | Primary LLM for trade reconciliation Q&A. Chosen for cost-effective reasoning with strong instruction-following. APAC inference profile routes to nearest AWS region automatically. | ~$5–15 | Input + output tokens | Move to **Nova Premier** for complex multi-step reasoning in prod; keep Nova Pro for simple lookups. Use **prompt caching** to reduce repeated context costs. | ~$50–200 |
+| **Amazon Bedrock Knowledge Base** | RAG (Retrieval-Augmented Generation) layer — retrieves relevant BARTT trade data, reconciliation rules, and xref JSON from the vector store before answering. Prevents hallucinations by grounding the LLM in actual BARTT data. | ~$0–2 | Retrieve API calls | Keep. Add **metadata filtering** by product/exchange to improve retrieval precision and reduce token usage. | ~$5–20 |
+| **Amazon Titan Embed Text v2** | Converts user queries and source documents into 1024-dim vectors for semantic search. Used during both ingestion (doc → vector) and retrieval (query → vector). | ~$1–2 | Tokens embedded | Keep for POC scale. At high doc volume consider **Cohere Embed v3** (better multilingual, lower cost per token). | ~$5–30 |
+| **Amazon OpenSearch Serverless** | Vector store backing the Knowledge Base. Stores 1024-dim HNSW/faiss embeddings and serves kNN similarity searches. Serverless chosen for zero-ops POC setup. | ~$345 ⚠️ | **2 OCU minimum** billed 24×7 regardless of traffic | **Switch to OpenSearch Managed (t3.small.search, 1 node, 20 GB EBS)** — same Bedrock KB integration, ~85% cheaper. For even lower cost use **Aurora PostgreSQL + pgvector** (~$50–70/mo). See cost optimisation section below. | ~$60–80 (managed) |
+| **Amazon S3** (`bartt-kb-data-source`) | Stores source documents (BARTT REQ Docs, xref JSON files) that are ingested into the Knowledge Base. Also used by CDK for deployment assets. | ~$1–3 | Storage + PUT/GET requests | Keep. Enable **S3 Intelligent-Tiering** for infrequently accessed docs to reduce storage cost. | ~$3–10 |
+| **Amazon ECR** | Stores the Docker image for the barttagent container. AgentCore pulls the image on each deployment. | ~$1 | Image storage (GB) | Keep. Enable **ECR lifecycle policy** to auto-delete images older than 30 days, keeping only the last 3 tagged versions. | ~$1–3 |
+| **AWS CDK / CloudFormation** | Infrastructure-as-Code for provisioning all AWS resources (AgentCore, KB, OSS, IAM roles, S3, ECR) in a single `agentcore deploy` command. Ensures reproducible, version-controlled infrastructure. | **Free** | — | Keep CDK. Add **CDK Pipelines** (CI/CD) for automated deployment on git push. | Free |
+| **AWS IAM Roles** | Least-privilege access control: Agent Execution Role grants only `bedrock:Retrieve`; KB Role grants only `bedrock:InvokeModel`, `aoss:APIAccessAll`, and `s3:GetObject`. | **Free** | — | Keep. Add **IAM Access Analyzer** to detect overly permissive policies before production. | Free |
+
+---
+
+### Total Cost Summary
+
+| Scenario | Monthly Estimate | Notes |
+| --- | --- | --- |
+| **POC (current — OSS Serverless)** | ~$403–467 | OpenSearch Serverless dominates at ~$345/mo |
+| **POC optimised (OSS Managed t3.small)** | ~$120–155 | Switch OSS → managed single-node; ~65% saving |
+| **POC optimised (Aurora + pgvector)** | ~$100–135 | Replace OSS with Aurora Serverless v2 + pgvector |
+| **Production (10–50 users, OSS Managed)** | ~$350–700 | Scale AgentCore replicas + Nova Pro token volume |
+| **Production (10–50 users, Aurora pgvector)** | ~$280–600 | Lowest vector-store cost path |
+
+---
+
+### OpenSearch Cost Optimisation Options
+
+| Option | Change Required | Monthly Saving | Effort |
+| --- | --- | --- | --- |
+| **OSS Managed (t3.small, 1 node)** | Replace `CfnCollection` with `opensearch.Domain` in CDK stack | ~$270/mo (65%) | Low — 1 day CDK refactor |
+| **Aurora PostgreSQL + pgvector** | Replace OSS with Aurora Serverless v2; update `storageConfiguration` in `CfnKnowledgeBase` to RDS type | ~$280/mo (68%) | Medium — 2 days |
+| **Bedrock built-in vector store** | Remove OSS entirely; use Bedrock-managed store | ~$345/mo (100%) | Low — but **not yet available in ap-south-1** (preview only) |
+
+---
+
 ## References
 
 - [AgentCore CLI](https://github.com/aws/agentcore-cli)
 - [Amazon Bedrock AgentCore](https://aws.amazon.com/bedrock/agentcore/)
 - [Strands Agents SDK](https://github.com/strands-agents/sdk-python)
 - [AgentCore CDK Constructs](https://github.com/aws/agentcore-l3-cdk-constructs)
+- [Amazon OpenSearch Managed Pricing](https://aws.amazon.com/opensearch-service/pricing/)
+- [Amazon Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/)
+- [Aurora Serverless v2 Pricing](https://aws.amazon.com/rds/aurora/pricing/)
